@@ -26,6 +26,8 @@ import { Scene as ShadowsScene } from "./Shadows/Scene";
 import fs_shadows from "./Shadows/fs.glsl?raw";
 import vs_shadows from "./Shadows/vs.glsl?raw";
 
+import { Scene as ClearCoatScene } from './clearcoat/src/Scene'
+
 export interface ExampleSceneProps {
   fs: string;
   vs: string;
@@ -41,6 +43,14 @@ export const SHADERS: {
     Component: React.ComponentType;
   };
 } = {
+  ClearCoatScene: {
+    fs: fs_default,
+    vs: vs_default,
+    Component: ClearCoatScene,
+    slug: "ClearCoatScene",
+    label: "ClearCoatScene",
+    category: "Examples",
+  },
   DEFAULT: {
     fs: fs_default,
     vs: vs_default,
