@@ -10,6 +10,9 @@ import Lights from './Lights'
 import perlin from './noise/perlin'
 import voronoise from './noise/voronoise'
 
+import Material from './Material.glsl'
+import BlenderMath from './blender-math.glsl'
+
 class ClearCoatCSM extends CSM {
   constructor() {
     super({
@@ -53,8 +56,11 @@ class ClearCoatCSM extends CSM {
             return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
         }
 
+        ${BlenderMath}
 
         void main() {
+          ${Material}
+
             // Fresnel 
             float fresnelFactor = fresnel();
 
@@ -135,12 +141,12 @@ function Thing() {
 export function Scene() {
   return (
     <>
-      <color attach="background" args={[235, 235, 235]} />
       <OrbitControls makeDefault />
       <PerspectiveCamera position={[-5, 5, 5]} makeDefault />
+      
       <Thing />
-
       <Lights />
+
       <mesh rotation-x={-Math.PI / 2} receiveShadow>
         <planeGeometry args={[100, 100]} />
         <shadowMaterial transparent opacity={0.2} />
