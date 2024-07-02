@@ -1,4 +1,4 @@
-import { OrbitControls, PerspectiveCamera, useGLTF } from '@react-three/drei'
+import { OrbitControls, PerspectiveCamera, Sphere, useGLTF } from '@react-three/drei'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
 import { useLayoutEffect, useMemo } from 'react'
@@ -11,14 +11,14 @@ import perlin from './noise/perlin'
 import voronoise from './noise/voronoise'
 
 import Material from './Material.glsl'
-import BlenderMath from './blender-math.glsl'
+import BlenderShaders from './blender-shaders.glsl'
 
 class ClearCoatCSM extends CSM {
   constructor() {
     super({
       metalness: 1,
-      roughness:1,
-      clearcoat:1,
+      // roughness:1,
+      // clearcoat:1,
       color:'#650000',
       baseMaterial: THREE.MeshPhysicalMaterial,
       vertexShader: /* glsl */ `
@@ -56,62 +56,69 @@ class ClearCoatCSM extends CSM {
             return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
         }
 
-        ${BlenderMath}
+        ${BlenderShaders}
 
         void main() {
           ${Material}
 
-            // Fresnel 
-            float fresnelFactor = fresnel();
+            // // Fresnel 
+            // float fresnelFactor = fresnel();
 
-            // Fleck
-            float fleckFactor = voronoi3d(csm_vPosition * 2000.0).y;
-            float fleckFactorY = voronoi3d(csm_vPosition * 2000.0 + 100.0).y;
-            float fleckFactorZ = voronoi3d(csm_vPosition * 2000.0 + 200.0).y;
+            // // Fleck
+            // float fleckFactor = voronoi3d(csm_vPosition * 2000.0).y;
+            // float fleckFactorY = voronoi3d(csm_vPosition * 2000.0 + 100.0).y;
+            // float fleckFactorZ = voronoi3d(csm_vPosition * 2000.0 + 200.0).y;
 
-            // Distance from camera
-            float normalizedDist = csm_vGlPosition.z / csm_vGlPosition.w;
-            normalizedDist = smoothstep(0.6, 1.0, normalizedDist);
-            // normalizedDist *= fresnelFactor;
+            // // Distance from camera
+            // float normalizedDist = csm_vGlPosition.z / csm_vGlPosition.w;
+            // normalizedDist = smoothstep(0.6, 1.0, normalizedDist);
+            // // normalizedDist *= fresnelFactor;
 
-            // Fade out flecks as we get further away
-            float nonDistanceFleckFactor = fleckFactor;
-            fleckFactor *= 1.0 - normalizedDist;
+            // // Fade out flecks as we get further away
+            // float nonDistanceFleckFactor = fleckFactor;
+            // fleckFactor *= 1.0 - normalizedDist;
 
-            // Diffuse
-            float diffuseFactor = csm_DiffuseColor.g;
-            float roughnessFactor_temp = fleckFactor;
+            // // Diffuse
+            // float diffuseFactor = csm_DiffuseColor.g;
+            // float roughnessFactor_temp = fleckFactor;
 
-            roughnessFactor_temp = mapLinear(roughnessFactor_temp, 0.0, 1.0, 0.4, 0.8);
-            csm_Roughness = roughnessFactor_temp;
-            // csm_FragColor.rgb = vec3(fresnelFactor);
+            // roughnessFactor_temp = mapLinear(roughnessFactor_temp, 0.0, 1.0, 0.4, 0.8);
+            // csm_Roughness = roughnessFactor_temp;
+            // // csm_FragColor.rgb = vec3(fresnelFactor);
 
-            // Color
-            float fresnelColorFactor = smoothstep(0.0, 1.0, clamp(fresnelFactor, 0.0, 0.4));
-            vec3 fresnelColor = mix(csm_DiffuseColor.rgb, uFleckColor, fresnelColorFactor);  
-            csm_DiffuseColor = vec4(fresnelColor, 1.0);
+            // // Color
+            // float fresnelColorFactor = smoothstep(0.0, 1.0, clamp(fresnelFactor, 0.0, 0.4));
+            // vec3 fresnelColor = mix(csm_DiffuseColor.rgb, uFleckColor, fresnelColorFactor);  
+            // csm_DiffuseColor = vec4(fresnelColor, 1.0);
 
-            float fleckColorFactor = smoothstep(0.99, 0.992, fleckFactor);
-            // csm_DiffuseColor = vec4(mix(csm_DiffuseColor.rgb, uFleckColor, fleckColorFactor), 1.0);
-            // csm_DiffuseColor = vec4(uFleckColor, 1.0);
+            // float fleckColorFactor = smoothstep(0.99, 0.992, fleckFactor);
+            // // csm_DiffuseColor = vec4(mix(csm_DiffuseColor.rgb, uFleckColor, fleckColorFactor), 1.0);
+            // // csm_DiffuseColor = vec4(uFleckColor, 1.0);
 
-            // csm_FragColor = vec4(vec3(fresnelColorFactor), 1.0);
+            // // csm_FragColor = vec4(vec3(fresnelColorFactor), 1.0);
 
 
-            // Orange peel
-            float orangePeelFactorX = pnoise(csm_vPosition * 1000.0);
-            float orangePeelFactorY = pnoise(csm_vPosition * 1000.0 + 100.0);
-            float orangePeelFactorZ = pnoise(csm_vPosition * 1000.0 + 200.0);
-            vec3 orangePeelFactor = vec3(orangePeelFactorX, orangePeelFactorY, orangePeelFactorZ);
+            // // Orange peel
+            // float orangePeelFactorX = pnoise(csm_vPosition * 1000.0);
+            // float orangePeelFactorY = pnoise(csm_vPosition * 1000.0 + 100.0);
+            // float orangePeelFactorZ = pnoise(csm_vPosition * 1000.0 + 200.0);
+            // vec3 orangePeelFactor = vec3(orangePeelFactorX, orangePeelFactorY, orangePeelFactorZ);
             
-            csm_ClearcoatNormal = orangePeelFactor * 0.01 * (1.0 - normalizedDist);
-            csm_Clearcoat = 1.0;
-            csm_ClearcoatRoughness = 0.0;
+            // csm_ClearcoatNormal = orangePeelFactor * 0.01 * (1.0 - normalizedDist);
+            // csm_Clearcoat = 1.0;
+            // csm_ClearcoatRoughness = 0.0;
 
-            csm_Bump = vec3(fleckFactor, fleckFactorY, fleckFactorZ) * 1.0 * (1.0 - normalizedDist);
+            // csm_Bump = vec3(fleckFactor, fleckFactorY, fleckFactorZ) * 1.0 * (1.0 - normalizedDist);
 
         }
-    `,
+      `,
+      patchMap: {
+        csm_IOR: {
+          "material.ior = ior;": `
+            material.ior = csm_IOR;
+          `,
+        },
+      },
     });
   }
 }
@@ -144,7 +151,9 @@ export function Scene() {
       <OrbitControls makeDefault />
       <PerspectiveCamera position={[-5, 5, 5]} makeDefault />
       
-      <Thing />
+      {/* <Thing /> */}
+      <Sphere material={new ClearCoatCSM}></Sphere>
+
       <Lights />
 
       <mesh rotation-x={-Math.PI / 2} receiveShadow>

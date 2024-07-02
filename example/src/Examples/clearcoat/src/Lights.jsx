@@ -43,8 +43,8 @@ export default function Lights() {
       {/* <directionalLight position={[2, 0, 0]} intensity={1} /> */}
       {/* <directionalLight position={[-2, 0, 0]} intensity={1} /> */}
 
-      <Environment frames={Infinity} resolution={256} blur={1}>
-        <Lightformers />
+      <Environment frames={Infinity} resolution={256} blur={1} background={true}>
+        {/* <Lightformers /> */}
         <Environment files={'https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/parking_garage_2k.hdr'} background />
       </Environment>
 

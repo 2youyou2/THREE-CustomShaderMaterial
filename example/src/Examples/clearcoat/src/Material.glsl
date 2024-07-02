@@ -1,24 +1,10 @@
 export default `
-vec3 var_Vector_Math_Vector;
-ShaderNodeVectorMath_ADD(
-  /* Vector */                  vec3(0.0, 0.0, 0.0),
-  /* Vector_001 */              vec3(0.0, 0.0, 0.0),
-  /* Vector */                  var_Vector_Math_Vector
-);
-
-float var_Math_Value;
-ShaderNodeMath_ADD(
-  /* Value */                   var_Vector_Math_Vector.x,
-  /* Value_001 */               0.10000002384185791,
-  /* Value */                   var_Math_Value
-);
-
 float var_Principled_BSDF_BSDF;
 ShaderNodeBsdfPrincipled(
-  /* Base Color */              vec4(0.01290600560605526, 0.01290600560605526, 0.01290600560605526, 1.0),
-  /* Metallic */                0.2836363911628723,
-  /* Roughness */               var_Math_Value,
-  /* IOR */                     1.4500000476837158,
+  /* Base Color */              vec4(0.003159948159009218, 0.003561544930562377, 0.0, 1.0),
+  /* Metallic */                0.0,
+  /* Roughness */               0.19999998807907104,
+  /* IOR */                     1.8500001430511475,
   /* Alpha */                   1.0,
   /* Normal */                  vec3(0.0, 0.0, 0.0),
   /* Subsurface Weight */       0.0,
@@ -32,7 +18,7 @@ ShaderNodeBsdfPrincipled(
   /* Tangent */                 vec3(0.0, 0.0, 0.0),
   /* Transmission Weight */     0.0,
   /* Coat Weight */             0.0,
-  /* Coat Roughness */          0.029999999329447746,
+  /* Coat Roughness */          0.0663636326789856,
   /* Coat IOR */                1.5,
   /* Coat Tint */               vec4(1.0, 1.0, 1.0, 1.0),
   /* Coat Normal */             vec3(0.0, 0.0, 0.0),
